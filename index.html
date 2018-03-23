@@ -191,11 +191,11 @@
          function parsev(a, dt) {
              p = vadd(p, v, dt);
              v = vadd(v, a, dt);
-             v = scal(v, 0.99)
-             if ((vmod(a)) < 0.001) {
-                 v=scal(v,0)
+             v = scal(v, 0.98)
+             if ((vmod(a)) < 0.01) {
+                 v = scal(v,0)
              }
-             if ((vmod(v)) < 0.0001) {
+             if ((vmod(v)) < 0.001) {
                  v = scal(v,0)
              }
          }
@@ -231,7 +231,7 @@
              document.getElementById('rotation-rate-alpha').innerHTML = mr(p.z);
 
              document.getElementById('interval').innerHTML = vmod(a);
-         }, 500);
+         }, 200);
          //if (!('oncompassneedscalibration' in window)) {
          //   document.getElementById('cnc-unsupported').classList.remove('hidden');
          //} else {
