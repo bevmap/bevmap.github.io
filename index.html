@@ -190,10 +190,10 @@
          function parsev(a, dt) {
              p = vadd(p, v, dt);
              v = vadd(v, a, dt);
-             if ((vmod(a)) < 0.1) {
+             if ((vmod(a)) < 0.0001) {
                  v=scal(v,0)
              }
-             if ((vmod(v)) < 0.1) {
+             if ((vmod(v)) < 0.0001) {
                  v = scal(v,0)
              }
          }
@@ -217,7 +217,7 @@
                 document.getElementById('acceleration-including-gravity-z').innerHTML =
                         mr(mr(v.z));
 
-               document.getElementById('rotation-rate-beta').innerHTML = mr(p.x);
+               document.getElementById('rotation-rate-beta').innerHTML =  mr(p.x);
                document.getElementById('rotation-rate-gamma').innerHTML = mr(p.y);
                document.getElementById('rotation-rate-alpha').innerHTML = mr(p.z);
 
