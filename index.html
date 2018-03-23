@@ -96,17 +96,17 @@
     <span id="cnc-unsupported" class="hidden">compassneedscalibration event not supported</span>
 
     <div id="do-results">
-        <div id="cube" class="cube">
+        <!--<div id="cube" class="cube">
             <div class="face one">1</div>
             <div class="face two">2</div>
             <div class="face three">3</div>
             <div class="face four">4</div>
             <div class="face five">5</div>
             <div class="face six">6</div>
-        </div>
+        </div>-->
         <div id="do-info" class="hidden">
             <p>
-                Coordinates:
+                Cube rotation:
                 (<span id="beta" class="value">null</span>,
                 <span id="gamma" class="value">null</span>,
                 <span id="alpha" class="value">null</span>)
@@ -140,31 +140,32 @@
             </p>
         </div>
     </div>
-    <input type="button" name="name" value="reset1" id="mybut"/>
+
+    <input type="button" name="name" value="reset2" id="mybut"/>
     
     <script>
         var p = { x: 0, y: 0, z: 0 };
         document.getElementById('mybut').onclick = function () {
             p.x = 0; p.y = 0; p.z = 0;
         }
-         if (!window.DeviceOrientationEvent) {
-            document.getElementById('do-unsupported').classList.remove('hidden');
-         } else {
-            document.getElementById('do-info').classList.remove('hidden');
+         //if (!window.DeviceOrientationEvent) {
+         //   document.getElementById('do-unsupported').classList.remove('hidden');
+         //} else {
+         //   document.getElementById('do-info').classList.remove('hidden');
 
-            window.addEventListener('deviceorientation', function(event) {
-               document.getElementById('cube').style.webkitTransform =
-               document.getElementById('cube').style.transform =
-                       'rotateX(' + event.beta + 'deg) ' +
-                       'rotateY(' + event.gamma + 'deg) ' +
-                       'rotateZ(' + event.alpha + 'deg)';
+         //   //window.addEventListener('deviceorientation', function(event) {
+         //   //   document.getElementById('cube').style.webkitTransform =
+         //   //   document.getElementById('cube').style.transform =
+         //   //           'rotateX(' + event.beta + 'deg) ' +
+         //   //           'rotateY(' + event.gamma + 'deg) ' +
+         //   //           'rotateZ(' + event.alpha + 'deg)';
 
-               document.getElementById('beta').innerHTML = mr(event.beta);
-               document.getElementById('gamma').innerHTML = mr(event.gamma);
-               document.getElementById('alpha').innerHTML = mr(event.alpha);
-               document.getElementById('is-absolute').innerHTML = event.absolute ? "true" : "false";
-            });
-         }
+         //   //   document.getElementById('beta').innerHTML = mr(event.beta);
+         //   //   document.getElementById('gamma').innerHTML = mr(event.gamma);
+         //   //   document.getElementById('alpha').innerHTML = mr(event.alpha);
+         //   //   document.getElementById('is-absolute').innerHTML = event.absolute ? "true" : "false";
+         //   //});
+         //}
          function mr(v) {
              return Math.round(v * 10000) / 10000;
          }
@@ -190,41 +191,47 @@
          function parsev(a, dt) {
              p = vadd(p, v, dt);
              v = vadd(v, a, dt);
-             if ((vmod(a)) < 0.0001) {
+             v = scal(v, 0.99)
+             if ((vmod(a)) < 0.001) {
                  v=scal(v,0)
              }
              if ((vmod(v)) < 0.0001) {
                  v = scal(v,0)
              }
          }
+         var dt = 0, a = 0;
+         document.getElementById('mybut').value = "ver3";
+
          if (!window.DeviceMotionEvent) {
             document.getElementById('dm-unsupported').classList.remove('hidden');
          } else {
             document.getElementById('dm-info').classList.remove('hidden');
 
             window.addEventListener('devicemotion', function (event) {
-                var a = event.acceleration;
-                var dt = event.interval;
+                a = event.acceleration;
+                dt = event.interval;
                 parsev(a, dt)
-                document.getElementById('acceleration-x').innerHTML = mr(a.x);
-                document.getElementById('acceleration-y').innerHTML = mr(a.y);
-                document.getElementById('acceleration-z').innerHTML = mr(a.z);
 
-                document.getElementById('acceleration-including-gravity-x').innerHTML =
-                        mr(mr(v.x));
-                document.getElementById('acceleration-including-gravity-y').innerHTML =
-                        mr(mr(v.y));
-                document.getElementById('acceleration-including-gravity-z').innerHTML =
-                        mr(mr(v.z));
-
-               document.getElementById('rotation-rate-beta').innerHTML =  mr(p.x);
-               document.getElementById('rotation-rate-gamma').innerHTML = mr(p.y);
-               document.getElementById('rotation-rate-alpha').innerHTML = mr(p.z);
-
-               //document.getElementById('interval').innerHTML = event.interval;
             });
          }
+         setInterval(function () {
+             document.getElementById('acceleration-x').innerHTML = mr(a.x);
+             document.getElementById('acceleration-y').innerHTML = mr(a.y);
+             document.getElementById('acceleration-z').innerHTML = mr(a.z);
 
+             document.getElementById('acceleration-including-gravity-x').innerHTML =
+                     mr(mr(v.x));
+             document.getElementById('acceleration-including-gravity-y').innerHTML =
+                     mr(mr(v.y));
+             document.getElementById('acceleration-including-gravity-z').innerHTML =
+                     mr(mr(v.z));
+
+             document.getElementById('rotation-rate-beta').innerHTML = mr(p.x);
+             document.getElementById('rotation-rate-gamma').innerHTML = mr(p.y);
+             document.getElementById('rotation-rate-alpha').innerHTML = mr(p.z);
+
+             document.getElementById('interval').innerHTML = vmod(a);
+         }, 500);
          //if (!('oncompassneedscalibration' in window)) {
          //   document.getElementById('cnc-unsupported').classList.remove('hidden');
          //} else {
