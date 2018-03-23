@@ -142,28 +142,34 @@
     </div>
 
     <input type="button" name="name" value="reset2" id="mybut"/>
-    
+    <input type="button" name="name" value="Showarr" id="mybut2" />
+    <input type="text" name="name" value="" id="mytext"/>
     <script>
+        var dg = function (s) {
+            return document.getElementById(s);
+        }
+
         var p = { x: 0, y: 0, z: 0 };
-        document.getElementById('mybut').onclick = function () {
+        dg('mybut').onclick = function () {
             p.x = 0; p.y = 0; p.z = 0;
         }
+        
          //if (!window.DeviceOrientationEvent) {
-         //   document.getElementById('do-unsupported').classList.remove('hidden');
+         //   dg('do-unsupported').classList.remove('hidden');
          //} else {
-         //   document.getElementById('do-info').classList.remove('hidden');
+         //   dg('do-info').classList.remove('hidden');
 
          //   //window.addEventListener('deviceorientation', function(event) {
-         //   //   document.getElementById('cube').style.webkitTransform =
-         //   //   document.getElementById('cube').style.transform =
+         //   //   dg('cube').style.webkitTransform =
+         //   //   dg('cube').style.transform =
          //   //           'rotateX(' + event.beta + 'deg) ' +
          //   //           'rotateY(' + event.gamma + 'deg) ' +
          //   //           'rotateZ(' + event.alpha + 'deg)';
 
-         //   //   document.getElementById('beta').innerHTML = mr(event.beta);
-         //   //   document.getElementById('gamma').innerHTML = mr(event.gamma);
-         //   //   document.getElementById('alpha').innerHTML = mr(event.alpha);
-         //   //   document.getElementById('is-absolute').innerHTML = event.absolute ? "true" : "false";
+         //   //   dg('beta').innerHTML = mr(event.beta);
+         //   //   dg('gamma').innerHTML = mr(event.gamma);
+         //   //   dg('alpha').innerHTML = mr(event.alpha);
+         //   //   dg('is-absolute').innerHTML = event.absolute ? "true" : "false";
          //   //});
          //}
          function mr(v) {
@@ -199,46 +205,71 @@
                  v = scal(v,0)
              }
          }
-         var dt = 0, a = 0;
-         document.getElementById('mybut').value = "ver3";
+         var dt =dt2= 0, a = 0;
+         var arr = new Float64Array(100000);
+         var cnt = 0;
+         dg('mybut').value = "ver4";
+         var clock=(new Date()).getTime();
 
          if (!window.DeviceMotionEvent) {
-            document.getElementById('dm-unsupported').classList.remove('hidden');
+            dg('dm-unsupported').classList.remove('hidden');
          } else {
-            document.getElementById('dm-info').classList.remove('hidden');
+            dg('dm-info').classList.remove('hidden');
 
             window.addEventListener('devicemotion', function (event) {
-                a = event.acceleration;
+                
+                //a = event.acceleration;
                 dt = event.interval;
-                parsev(a, dt)
+                var nt=(new Date()).getTime();
+                dt2 = nt - clock;
+                clock = nt;
+                //arr.push(event.acceleration.x, event.acceleration.y, event.acceleration.z,dt2);
+                arr[cnt++] = event.acceleration.x;
+                arr[cnt++] = event.acceleration.y;
+                arr[cnt++] = event.acceleration.z;
+                arr[cnt++] = dt2;
+                //parsev(a, dt)
 
             });
          }
+
+         function cleanar() {
+             var nar = new Float64Array(cnt);
+             for (var i = 0; i <cnt; i++) {
+                 nar[i] = arr[i];
+             }
+             console.log(nar);
+             return nar;
+         }
+
+         dg('mybut2').onclick = function () {
+             dg('mytext').value = cleanar().toString()
+         }
+
          setInterval(function () {
-             document.getElementById('acceleration-x').innerHTML = mr(a.x);
-             document.getElementById('acceleration-y').innerHTML = mr(a.y);
-             document.getElementById('acceleration-z').innerHTML = mr(a.z);
+             dg('acceleration-x').innerHTML = cnt;
+             dg('acceleration-y').innerHTML = dt;
+             dg('acceleration-z').innerHTML = dt2;
 
-             document.getElementById('acceleration-including-gravity-x').innerHTML =
-                     mr(mr(v.x));
-             document.getElementById('acceleration-including-gravity-y').innerHTML =
-                     mr(mr(v.y));
-             document.getElementById('acceleration-including-gravity-z').innerHTML =
-                     mr(mr(v.z));
+             //dg('acceleration-x').innerHTML = mr(a.x);
+             //dg('acceleration-y').innerHTML = mr(a.y);
+             //dg('acceleration-z').innerHTML = mr(a.z);
 
-             document.getElementById('rotation-rate-beta').innerHTML = mr(p.x);
-             document.getElementById('rotation-rate-gamma').innerHTML = mr(p.y);
-             document.getElementById('rotation-rate-alpha').innerHTML = mr(p.z);
+             //dg('acceleration-including-gravity-x').innerHTML =
+             //        mr(mr(v.x));
+             //dg('acceleration-including-gravity-y').innerHTML =
+             //        mr(mr(v.y));
+             //dg('acceleration-including-gravity-z').innerHTML =
+             //        mr(mr(v.z));
 
-             document.getElementById('interval').innerHTML = vmod(a);
-         }, 200);
-         //if (!('oncompassneedscalibration' in window)) {
-         //   document.getElementById('cnc-unsupported').classList.remove('hidden');
-         //} else {
-         //   window.addEventListener('compassneedscalibration', function(event) {
-         //      alert('Compass needs calibrating! Wave your device in a figure-eight motion');
-         //   });
-         //}
+             //dg('rotation-rate-beta').innerHTML = mr(p.x);
+             //dg('rotation-rate-gamma').innerHTML = mr(p.y);
+             //dg('rotation-rate-alpha').innerHTML = mr(p.z);
+
+             //dg('interval').innerHTML = vmod(a);
+        }, 200);
+
+
     </script>
 </body>
 </html>
