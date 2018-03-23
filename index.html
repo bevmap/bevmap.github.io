@@ -140,8 +140,13 @@
             </p>
         </div>
     </div>
-
+    <input type="button" name="name" value="reset" id="mybut"/>
+    
     <script>
+        var p = { x: 0, y: 0, z: 0 };
+        document.getElementById('mybut').onclick = function () {
+            p.x = 0; p.y = 0; p.z = 0;
+        }
          if (!window.DeviceOrientationEvent) {
             document.getElementById('do-unsupported').classList.remove('hidden');
          } else {
@@ -163,15 +168,34 @@
          function mr(v) {
              return Math.round(v * 10000) / 10000;
          }
-         var p = { x: 0, y: 0, z: 0 };
+         
          var v = { x: 0, y: 0, z: 0 };
          var dv = { x: 0, y: 0, z: 0 };
-         function vadd(){
-             v.x+=dv.x;v.y+=dv.y;v.z+=dv.z;
+         function make0(v) {
+             v.x = 0; v.y = 0; v.z = 0;
+         }
+         function scal(v, m) {
+             var vn = v;
+             vn.x = v.x * m; vn.y = v.y * m; vn.z = v.z * m;
+             return vn;
+         }
+         function vadd(v, add, m) {
+             var vn = v;
+             vn.x += add.x * m; vn.y += add.y * m; vn.z += add.z * m;
+             return vn;
+         }
+         function vmod(v) {
+             return (v.x * v.x + v.y * v.y+v.z * v.z);
          }
          function parsev(a, dt) {
-             p.x += v.x * dt; p.y += v.y * dt; p.z += v.z * dt;
-             v.x += a.x * dt; v.y += a.y * dt; v.z += a.z * dt;
+             p = vadd(p, v, dt);
+             v = vadd(v, a, dt);
+             if ((vmod(a)) < 0.1) {
+                 v=scal(v,0)
+             }
+             if ((vmod(v)) < 0.1) {
+                 v = scal(v,0)
+             }
          }
          if (!window.DeviceMotionEvent) {
             document.getElementById('dm-unsupported').classList.remove('hidden');
@@ -193,16 +217,9 @@
                 document.getElementById('acceleration-including-gravity-z').innerHTML =
                         mr(mr(v.z));
 
-               document.getElementById('acceleration-including-gravity-x').innerHTML =
-                       mr(p.x);
-               document.getElementById('acceleration-including-gravity-y').innerHTML =
-                       mr(p.y);
-               document.getElementById('acceleration-including-gravity-z').innerHTML =
-                       mr(p.z);
-
-               //document.getElementById('rotation-rate-beta').innerHTML = mr(event.rotationRate.beta);
-               //document.getElementById('rotation-rate-gamma').innerHTML = mr(event.rotationRate.gamma);
-               //document.getElementById('rotation-rate-alpha').innerHTML = mr(event.rotationRate.alpha);
+               document.getElementById('rotation-rate-beta').innerHTML = mr(p.x);
+               document.getElementById('rotation-rate-gamma').innerHTML = mr(p.y);
+               document.getElementById('rotation-rate-alpha').innerHTML = mr(p.z);
 
                //document.getElementById('interval').innerHTML = event.interval;
             });
